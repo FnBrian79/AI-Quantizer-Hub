@@ -54,6 +54,7 @@ export interface PromptContract {
   examples: string[];
   evolutionScore: number;
   lastUpdated: number;
+  githubRepo?: string; // The orchestration maestro source
 }
 
 export interface BackboneState {

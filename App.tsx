@@ -83,6 +83,15 @@ const Dashboard: React.FC = () => {
     ]);
   }, []);
 
+  const handleUpdateContract = useCallback((updates: Partial<PromptContract>) => {
+    setContract(prev => ({ ...prev, ...updates, lastUpdated: Date.now() }));
+    if (updates.githubRepo) {
+      addLog(`MAESTRO: Contract context updated via GitHub repo: ${updates.githubRepo}`);
+    } else {
+      addLog("MAESTRO: Contract evolution constraints updated.");
+    }
+  }, [addLog]);
+
   const handleSyncToBackbone = useCallback((pod: ConversationPod) => {
     // If the lastMessage is empty or null, log a 'Sync skipped' message and return early
     if (!pod.lastMessage || pod.lastMessage.trim() === '') {
@@ -405,7 +414,7 @@ const Dashboard: React.FC = () => {
         <div className="flex-[2] flex flex-col gap-6">
           <BackboneStatus backbone={backbone} />
           <PiecesOSContext snippets={snippets} debugMode={debugMode} />
-          <PromptEvolution contract={contract} />
+          <PromptEvolution contract={contract} onUpdate={handleUpdateContract} />
           <ControlPanel onAction={(msg) => {
             if (msg.includes('Stress Test')) runStressTest();
             else addLog(msg);

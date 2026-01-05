@@ -32,7 +32,8 @@ export const INITIAL_PROMPT_CONTRACT: PromptContract = {
     'Automate snippet capture via Pieces OS API'
   ],
   evolutionScore: 9.2,
-  lastUpdated: Date.now()
+  lastUpdated: Date.now(),
+  githubRepo: ''
 };
 
 export const MOCK_SNIPPETS: ContextSnippet[] = [

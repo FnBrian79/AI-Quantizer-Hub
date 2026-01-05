@@ -1,12 +1,28 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { PromptContract } from '../types';
-import { RefreshCcw, ArrowRight, Code, ListFilter } from 'lucide-react';
+import { RefreshCcw, ArrowRight, Code, ListFilter, Github, Link as LinkIcon, CheckCircle } from 'lucide-react';
 
 interface Props {
   contract: PromptContract;
+  onUpdate?: (updates: Partial<PromptContract>) => void;
 }
 
-const PromptEvolution: React.FC<Props> = ({ contract }) => {
+const PromptEvolution: React.FC<Props> = ({ contract, onUpdate }) => {
+  const [repoInput, setRepoInput] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  const handleConnectRepo = () => {
+    if (!repoInput || !onUpdate) return;
+    setIsConnecting(true);
+    // Simulate API connection delay
+    setTimeout(() => {
+      onUpdate({ githubRepo: repoInput });
+      setIsConnecting(false);
+      setRepoInput('');
+    }, 1500);
+  };
+
   return (
     <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex-1 flex flex-col">
       <div className="flex items-center justify-between mb-6">
@@ -21,6 +37,61 @@ const PromptEvolution: React.FC<Props> = ({ contract }) => {
       </div>
 
       <div className="space-y-4 flex-1 overflow-auto">
+        
+        {/* Orchestration Maestro Section */}
+        <div className="space-y-2">
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+            <Github size={12} className={contract.githubRepo ? "text-white" : "text-slate-600"} /> 
+            Orchestration Maestro Context
+          </label>
+          
+          {contract.githubRepo ? (
+             <div className="bg-slate-800/40 border border-slate-700 rounded-lg p-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1 bg-white rounded-full text-black">
+                    <Github size={12} fill="currentColor" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-slate-300 tracking-tight">{contract.githubRepo}</span>
+                    <span className="text-[8px] text-emerald-500 flex items-center gap-1">
+                      <CheckCircle size={8} /> LIVE_SYNC_ACTIVE
+                    </span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => onUpdate && onUpdate({ githubRepo: undefined })}
+                  className="text-[9px] text-slate-500 hover:text-red-400 uppercase font-bold underline decoration-slate-700"
+                >
+                  Unlink
+                </button>
+             </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600">
+                  <Github size={12} />
+                </div>
+                <input 
+                  type="text" 
+                  value={repoInput}
+                  onChange={(e) => setRepoInput(e.target.value)}
+                  placeholder="github_user/repo_name"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-8 pr-3 text-[10px] font-mono text-slate-300 placeholder:text-slate-700 focus:outline-none focus:border-slate-600 transition-colors"
+                />
+              </div>
+              <button 
+                onClick={handleConnectRepo}
+                disabled={!repoInput || isConnecting}
+                className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${isConnecting ? 'bg-slate-800 text-slate-500 cursor-wait' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'}`}
+              >
+                {isConnecting ? '...' : <LinkIcon size={12} />}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="h-px bg-slate-800/50 my-2"></div>
+
         <div className="space-y-2">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
             <Code size={12} /> Active Base Pattern
