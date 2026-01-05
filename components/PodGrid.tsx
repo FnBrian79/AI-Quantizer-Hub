@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { ConversationPod, PodStatus, AgentType } from '../types';
-import { AGENT_ICONS } from '../constants';
+import { AGENT_ICONS, SPECIAL_ICON_URL } from '../constants';
 import { 
   Activity, 
   ArrowUpCircle, 
@@ -15,29 +16,26 @@ import {
   Trophy,
   Flame,
   Zap,
-  Globe
+  Globe,
+  X
 } from 'lucide-react';
 
 interface PodGridProps {
   pods: ConversationPod[];
   onSync: (pod: ConversationPod) => void;
+  onRemove: (id: string) => void;
   antiGravity?: boolean;
   debugMode?: boolean;
 }
 
 const ChromeLogo = ({ active }: { active: boolean }) => (
-  <div className={`relative w-5 h-5 rounded-full flex items-center justify-center overflow-hidden transition-all ${active ? 'chrome-logo-active bg-white' : 'bg-slate-800 border border-slate-700 grayscale opacity-40'}`}>
-    <svg viewBox="0 0 24 24" className="w-full h-full p-[1px]">
-      <path fill="#EA4335" d="M12 0L24 12H12z" />
-      <path fill="#FBBC04" d="M12 24L0 12h12z" />
-      <path fill="#34A853" d="M0 12L12 0v12z" />
-      <circle cx="12" cy="12" r="5" fill="#4285F4" stroke="white" strokeWidth="1" />
-    </svg>
-    {active && <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent pointer-events-none"></div>}
+  <div className={`relative w-5 h-5 rounded-full flex items-center justify-center overflow-hidden transition-all ${active ? 'chrome-logo-active' : 'bg-slate-800 border border-slate-700 grayscale opacity-40'}`}>
+    <img src={SPECIAL_ICON_URL} alt="Special Icon" className="w-full h-full object-cover" />
+    {active && <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>}
   </div>
 );
 
-const PodGrid: React.FC<PodGridProps> = ({ pods, onSync, antiGravity, debugMode }) => {
+const PodGrid: React.FC<PodGridProps> = ({ pods, onSync, onRemove, antiGravity, debugMode }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-10 p-4">
       {pods.map((pod) => (
@@ -45,6 +43,7 @@ const PodGrid: React.FC<PodGridProps> = ({ pods, onSync, antiGravity, debugMode 
           key={pod.id} 
           pod={pod} 
           onSync={onSync} 
+          onRemove={onRemove}
         />
       ))}
     </div>
@@ -54,7 +53,8 @@ const PodGrid: React.FC<PodGridProps> = ({ pods, onSync, antiGravity, debugMode 
 const PodCard: React.FC<{ 
   pod: ConversationPod; 
   onSync: (pod: ConversationPod) => void; 
-}> = ({ pod, onSync }) => {
+  onRemove: (id: string) => void;
+}> = ({ pod, onSync, onRemove }) => {
   const [localAr, setLocalAr] = useState(false);
 
   const getStatusColor = (status: PodStatus) => {
@@ -115,7 +115,12 @@ const PodCard: React.FC<{
                <div className={`px-4 py-1.5 rounded-t-xl border-t border-x border-slate-800 text-[10px] flex items-center gap-2 min-w-[200px] max-w-[280px] ${isRunning ? 'bg-[#0f0f0f] text-blue-100' : 'bg-[#0a0a0a] text-slate-600'}`}>
                   <ChromeLogo active={isRunning} />
                   <span className="truncate font-bold tracking-tight">{pod.name} – {performanceTag}</span>
-                  <span className="ml-auto text-slate-700 hover:text-slate-400 cursor-pointer">×</span>
+                  <button 
+                    onClick={() => onRemove(pod.id)}
+                    className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
+                  >
+                    <X size={12} />
+                  </button>
                </div>
                <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
                  <Plus size={14} className="text-slate-700" />

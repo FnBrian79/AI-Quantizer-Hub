@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Activity, 
@@ -29,7 +30,7 @@ import {
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { GoogleGenAI } from "@google/genai";
 import { ConversationPod, BackboneState, PromptContract, PodStatus, AgentType, ContextSnippet } from './types';
-import { INITIAL_PODS, INITIAL_PROMPT_CONTRACT, AGENT_ICONS, COLORS, MOCK_SNIPPETS } from './constants';
+import { INITIAL_PODS, INITIAL_PROMPT_CONTRACT, AGENT_ICONS, COLORS, MOCK_SNIPPETS, SPECIAL_ICON_URL } from './constants';
 import PodGrid from './components/PodGrid';
 import BackboneStatus from './components/BackboneStatus';
 import PromptEvolution from './components/PromptEvolution';
@@ -161,7 +162,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleCreatePod = () => {
-    const id = `pod-${pods.length + 1}`;
+    const id = `pod-${Date.now()}`;
     const newPod: ConversationPod = {
       id,
       name: `Browser-${pods.length + 1 < 10 ? '0' : ''}${pods.length + 1}`,
@@ -176,6 +177,11 @@ const Dashboard: React.FC = () => {
     setPods(prev => [...prev, newPod]);
     addLog(`LAUNCH: Neural bridge established for ${agent1} ⇄ ${agent2}`);
   };
+
+  const handleRemovePod = useCallback((id: string) => {
+    setPods(prev => prev.filter(pod => pod.id !== id));
+    addLog(`NODE_TERMINATED: Pod [${id}] has been closed and resources reclaimed.`);
+  }, [addLog]);
 
   const runStressTest = useCallback(() => {
     addLog("DEBUG: Initiating Cluster Stress Test...");
@@ -250,8 +256,8 @@ const Dashboard: React.FC = () => {
 
       <header className="flex items-center justify-between px-6 py-4 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 shrink-0 z-[100] relative shadow-2xl">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-600 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.4)]">
-            <Activity className="text-white" size={20} />
+          <div className="w-10 h-10 overflow-hidden rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.3)] bg-slate-800 flex items-center justify-center border border-white/10 group">
+             <img src={SPECIAL_ICON_URL} alt="Quantizer Logo" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight">
@@ -367,7 +373,13 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
             
-            <PodGrid pods={pods} onSync={handleSyncToBackbone} antiGravity={antiGravity} debugMode={debugMode} />
+            <PodGrid 
+              pods={pods} 
+              onSync={handleSyncToBackbone} 
+              onRemove={handleRemovePod}
+              antiGravity={antiGravity} 
+              debugMode={debugMode} 
+            />
           </section>
 
           <section className="flex-1 min-h-[250px] flex flex-col">

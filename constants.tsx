@@ -3,6 +3,8 @@ import React from 'react';
 import { AgentType, PodStatus, ConversationPod, PromptContract, ContextSnippet } from './types';
 import { Bot, Cpu, Zap, Globe, Shield, Terminal, Link2 } from 'lucide-react';
 
+export const SPECIAL_ICON_URL = "https://photos.fife.usercontent.google.com/pw/AP1GczNObicQg5cQLeTk7reUyiWAEI5MzkEcBsug9ShJVFbJYnEgK74fBqJIMw=w1024-h1024-s-no-gm?authuser=0";
+
 export const INITIAL_PODS: ConversationPod[] = [
   { id: 'pod-1', name: 'Browser-01', agents: [AgentType.GEMINI, AgentType.GROK], status: PodStatus.RUNNING, currentTurn: 4, maxTurns: 10, lastMessage: 'Analyzing quantum tunneling patterns...', signalStrength: 82, url: 'https://node-01.quantizer.ai/session' },
   { id: 'pod-2', name: 'Browser-02', agents: [AgentType.CLAUDE, AgentType.GEMINI], status: PodStatus.RUNNING, currentTurn: 7, maxTurns: 10, lastMessage: 'Retrieving superconductor lattice context...', signalStrength: 91, url: 'https://node-02.quantizer.ai/research' },
