@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PromptContract } from '../types';
 import { RefreshCcw, ArrowRight, Code, ListFilter } from 'lucide-react';
@@ -48,7 +47,6 @@ const PromptEvolution: React.FC<Props> = ({ contract }) => {
         <div className="space-y-2">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Self-Improvement Loop</label>
           <div className="h-16 relative bg-slate-950 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center">
-            {/* Visual loop animation placeholder */}
             <div className="absolute inset-0 flex items-center justify-around px-8 opacity-30">
                {[...Array(5)].map((_, i) => (
                  <div key={i} className="w-1 h-8 bg-emerald-500/20 rounded-full"></div>
@@ -56,16 +54,16 @@ const PromptEvolution: React.FC<Props> = ({ contract }) => {
             </div>
             <div className="relative z-10 flex items-center gap-4 text-[10px] font-mono">
                <span className="text-slate-500">RAW DATA</span>
-               <ArrowRight size={14} className="text-emerald-500 animate-pulse" />
+               <ArrowRight size={14} className="text-emerald-500" />
                <span className="text-emerald-400 font-bold uppercase">Synthesizer</span>
-               <ArrowRight size={14} className="text-emerald-500 animate-pulse" />
+               <ArrowRight size={14} className="text-emerald-500" />
                <span className="text-slate-500">CONTRACT V{contract.version + 1}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <button className="w-full mt-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-bold transition-all shadow-lg shadow-emerald-900/20">
+      <button className="w-full mt-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-bold shadow-lg shadow-emerald-900/20">
         EVOLVE MANUALLY
       </button>
     </section>

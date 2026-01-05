@@ -18,81 +18,44 @@
             font-family: 'Fira Code', monospace;
         }
         
-        /* The snake movement - continuous rotation */
-        @keyframes snake-crawl {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Container for the active node border */
         .gemini-active-node {
             position: relative;
             z-index: 10;
         }
         
-        /* The Snake base segment */
+        /* The Snake: Now a static colorful border highlight */
         .gemini-active-node::before {
             content: '';
             position: absolute;
-            inset: -3px;
-            border-radius: 1.15rem;
+            inset: -4px;
+            border-radius: 1.25rem;
             z-index: -1;
-            animation: snake-crawl 2s linear infinite;
         }
 
-        /* Color Variants for the Snake */
-        
-        /* Blue: Ready to go */
+        /* BLUE: Ready to go (Static) */
         .snake-blue::before {
-            background: conic-gradient(
-                from 0deg, 
-                #3b82f6 0deg, 
-                #60a5fa 45deg, 
-                #93c5fd 90deg, 
-                transparent 90deg,
-                transparent 360deg
-            );
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
         }
 
-        /* Green: Going good */
+        /* GREEN: Going Good (Static) */
         .snake-green::before {
-            background: conic-gradient(
-                from 0deg, 
-                #22c55e 0deg, 
-                #4ade80 45deg, 
-                #86efac 90deg, 
-                transparent 90deg,
-                transparent 360deg
-            );
+            background: linear-gradient(135deg, #22c55e, #166534);
         }
 
-        /* Yellow: Heating up */
+        /* YELLOW: Heating Up (Static) */
         .snake-yellow::before {
-            background: conic-gradient(
-                from 0deg, 
-                #eab308 0deg, 
-                #facc15 45deg, 
-                #fef08a 90deg, 
-                transparent 90deg,
-                transparent 360deg
-            );
+            background: linear-gradient(135deg, #eab308, #854d0e);
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
         }
 
-        /* Red: Best performer / Cream of crop */
+        /* RED: Cream of the Crop (Static) */
         .snake-red::before {
-            background: conic-gradient(
-                from 0deg, 
-                #ef4444 0deg, 
-                #f87171 45deg, 
-                #fca5a5 90deg, 
-                transparent 90deg,
-                transparent 360deg
-            );
-            animation-duration: 1.2s; /* Faster for peak performance */
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
         }
 
         .node-container {
-            transition: all 0.3s ease;
+            transition: none; /* Removed transition animation */
             background: #0a0a0a;
             position: relative;
             z-index: 1;
@@ -100,7 +63,6 @@
             width: 100%;
         }
 
-        /* Create a gap for the snake border to show through */
         .gemini-active-node .node-container {
             border: 2px solid transparent;
             background-clip: padding-box;
@@ -109,17 +71,6 @@
         .chrome-logo-active {
             border: 2px solid #fbbf24;
             border-radius: 50%;
-        }
-
-        /* Split Tab styling */
-        .split-tab-pane {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .split-tab-pane:last-child {
-            border-right: none;
         }
 
         ::-webkit-scrollbar {
@@ -136,9 +87,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #334155;
         }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
     </style>
 <script type="importmap">
 {
@@ -153,7 +101,7 @@
 }
 </script>
 </head>
-<body class="ar-container">
+<body>
     <div id="root"></div>
 </body>
 </html>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ContextSnippet } from '../types';
 import { Link2, Sparkles, Database, History, Search, Box } from 'lucide-react';
@@ -12,7 +11,7 @@ const PiecesOSContext: React.FC<Props> = ({ snippets, debugMode }) => {
   return (
     <section className="bg-slate-900 border border-cyan-900/30 rounded-2xl p-5 shadow-xl pieces-glow relative overflow-hidden">
       {debugMode && (
-        <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-cyan-600 uppercase tracking-widest animate-pulse">
+        <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-cyan-600 uppercase tracking-widest">
           Memory Trace: ACTIVE
         </div>
       )}
@@ -23,7 +22,7 @@ const PiecesOSContext: React.FC<Props> = ({ snippets, debugMode }) => {
           PIECES OS AGENT
         </h2>
         <div className="flex gap-1.5">
-           <button className="p-1.5 bg-cyan-950/40 text-cyan-500 hover:bg-cyan-900/60 rounded-md border border-cyan-800/30 transition-all">
+           <button className="p-1.5 bg-cyan-950/40 text-cyan-500 hover:bg-cyan-900/60 rounded-md border border-cyan-800/30 transition-colors">
              <Search size={14} />
            </button>
         </div>
@@ -38,7 +37,7 @@ const PiecesOSContext: React.FC<Props> = ({ snippets, debugMode }) => {
       <div className="space-y-3">
         <div className="text-[10px] font-bold text-cyan-800 tracking-widest uppercase mb-2">Neural Snippets</div>
         {snippets.map((snip) => (
-          <div key={snip.id} className="bg-slate-950/80 p-3 rounded-lg border border-cyan-900/20 group hover:border-cyan-500/30 transition-all">
+          <div key={snip.id} className="bg-slate-950/80 p-3 rounded-lg border border-cyan-900/20 group hover:border-cyan-500/30 transition-colors">
             <div className="flex justify-between items-start mb-1">
               <span className="text-[9px] font-mono text-cyan-600 uppercase tracking-tighter">{snip.source}</span>
               <span className="text-[9px] font-mono text-cyan-700">{Math.round(snip.relevance * 100)}% Context Match</span>
@@ -54,14 +53,14 @@ const PiecesOSContext: React.FC<Props> = ({ snippets, debugMode }) => {
             )}
             <div className="flex justify-between items-center text-[8px] font-mono text-slate-600">
               <span>CAPTURED: {new Date(snip.timestamp).toLocaleTimeString()}</span>
-              <button className="text-cyan-600 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest">Restore</button>
+              <button className="text-cyan-600 hover:text-cyan-400 uppercase font-bold tracking-widest transition-colors">Restore</button>
             </div>
           </div>
         ))}
       </div>
 
-      <button className="w-full mt-4 py-2 bg-cyan-900/20 hover:bg-cyan-900/40 border border-cyan-800/30 text-cyan-400 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 group">
-        <Sparkles size={14} className="group-hover:animate-spin" /> ANALYZE CROSS-CONTEXT
+      <button className="w-full mt-4 py-2 bg-cyan-900/20 hover:bg-cyan-900/40 border border-cyan-800/30 text-cyan-400 rounded-lg text-xs font-bold flex items-center justify-center gap-2 group">
+        <Sparkles size={14} /> ANALYZE CROSS-CONTEXT
       </button>
     </section>
   );

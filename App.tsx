@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Activity, 
@@ -84,15 +83,18 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handleSyncToBackbone = useCallback((pod: ConversationPod) => {
+    // If the lastMessage is empty or null, log a 'Sync skipped' message and return early
     if (!pod.lastMessage || pod.lastMessage.trim() === '') {
       addLog(`Sync skipped: ${pod.name} has no signal data.`);
       return;
     }
 
-    const snippet = pod.lastMessage.length > 45 
-      ? `${pod.lastMessage.substring(0, 45).trim()}...` 
+    // If a pod's lastMessage is longer than 40 characters, ensure it is truncated and append '...'
+    const snippet = pod.lastMessage.length > 40 
+      ? `${pod.lastMessage.substring(0, 40).trim()}...` 
       : pod.lastMessage;
 
+    // Ensure the pod.signalStrength is a valid number
     const strengthValue = typeof pod.signalStrength === 'number' && !isNaN(pod.signalStrength) 
       ? pod.signalStrength 
       : 0;
@@ -107,7 +109,8 @@ const Dashboard: React.FC = () => {
       ]
     }));
     
-    addLog(`NEURAL_SYNC: Pod [${pod.name}] payload integrated into local backbone cluster.`);
+    // Dynamically include the pod's name and signal strength in the log message
+    addLog(`NEURAL_SYNC: Pod [${pod.name}] (${strengthValue}%) payload integrated into local backbone cluster.`);
   }, [addLog]);
 
   const runGlobalSynthesis = async () => {
@@ -222,7 +225,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className={`flex flex-col h-screen overflow-hidden text-slate-200 transition-all duration-1000 ${arMode ? 'ar-active' : ''} ${antiGravity ? 'bg-slate-950 bg-[radial-gradient(circle_at_center,_rgba(2,6,23,1)_0%,_rgba(15,23,42,1)_100%)]' : 'bg-slate-950'} ${debugMode ? 'scanline-overlay' : ''}`}>
+    <div className={`flex flex-col h-screen overflow-hidden text-slate-200 ${arMode ? 'ar-active' : ''} ${antiGravity ? 'bg-slate-950 bg-[radial-gradient(circle_at_center,_rgba(2,6,23,1)_0%,_rgba(15,23,42,1)_100%)]' : 'bg-slate-950'} ${debugMode ? 'scanline-overlay' : ''}`}>
       <div className="ar-grid-overlay"></div>
       <div className="ar-hud-frame"></div>
       
@@ -234,7 +237,7 @@ const Dashboard: React.FC = () => {
           <h2 className="text-3xl font-bold mb-2 tracking-tighter text-blue-400">DEPLOYING CLUSTER</h2>
           <p className="text-slate-400 text-sm mb-8 font-mono">Target: coil-operator-sanctum-node-control (us-west1)</p>
           <div className="w-full max-w-md h-2 bg-slate-800 rounded-full overflow-hidden mb-4 border border-white/5 shadow-2xl">
-            <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${deployProgress}%` }}></div>
+            <div className="h-full bg-blue-500" style={{ width: `${deployProgress}%` }}></div>
           </div>
           <div className="flex flex-col items-center gap-2">
             <span className="text-xs text-blue-400 font-mono uppercase tracking-[0.3em]">
@@ -264,7 +267,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setArMode(!arMode)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-bold transition-all border ${arMode ? 'bg-cyan-500 text-black border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)]' : 'bg-slate-800 text-slate-500 border-slate-700 hover:text-slate-300'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-bold transition-colors border ${arMode ? 'bg-cyan-500 text-black border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)]' : 'bg-slate-800 text-slate-500 border-slate-700 hover:text-slate-300'}`}
           >
             <Eye size={14} />
             {arMode ? 'AR MODE: ACTIVE' : 'AR MODE: OFF'}
@@ -272,7 +275,7 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={runGlobalSynthesis}
-            className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-all hover:bg-purple-600/40"
+            className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-colors hover:bg-purple-600/40"
           >
             <BrainCircuit size={14} />
             GLOBAL SYNTHESIS
@@ -280,7 +283,7 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={deployCluster}
-            className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-md text-[10px] font-bold transition-all hover:bg-blue-500 shadow-lg shadow-blue-900/40"
+            className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-md text-[10px] font-bold transition-colors hover:bg-blue-500 shadow-lg shadow-blue-900/40"
           >
             <CloudUpload size={14} />
             DEPLOY CLUSTER
@@ -290,7 +293,7 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={() => setDebugMode(!debugMode)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-bold transition-all border ${debugMode ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-slate-800 text-slate-500 border-slate-700'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-bold transition-colors border ${debugMode ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-slate-800 text-slate-500 border-slate-700'}`}
           >
             <Bug size={14} />
             DIAGNOSTICS
@@ -298,7 +301,7 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={() => setAntiGravity(!antiGravity)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all ${antiGravity ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.3)]' : 'bg-slate-800 text-slate-500 border-slate-700'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold transition-colors ${antiGravity ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.3)]' : 'bg-slate-800 text-slate-500 border-slate-700'}`}
           >
             {antiGravity ? <Zap size={14} /> : <ZapOff size={14} />}
             {antiGravity ? 'ZERO-G' : 'GRAVITY'}
@@ -321,7 +324,7 @@ const Dashboard: React.FC = () => {
 
               <div className="flex items-center gap-3 bg-slate-950/80 p-2 rounded-xl border border-slate-800 shadow-inner">
                 <div className="flex flex-col gap-1">
-                  <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest ml-1">Research Partner A</span>
+                  <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest ml-1">Partner A</span>
                   <div className="flex items-center gap-2 bg-slate-900 p-1 rounded border border-slate-800">
                     {AGENT_ICONS[agent1]}
                     <select 
@@ -335,7 +338,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="text-slate-700 font-bold text-lg self-end mb-1 px-1">⇄</div>
                 <div className="flex flex-col gap-1">
-                  <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest ml-1">Research Partner B</span>
+                  <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest ml-1">Partner B</span>
                   <div className="flex items-center gap-2 bg-slate-900 p-1 rounded border border-slate-800">
                     {AGENT_ICONS[agent2]}
                     <select 
@@ -424,7 +427,6 @@ const Dashboard: React.FC = () => {
   );
 };
 
-// Main App component with routing
 const App: React.FC = () => {
   return (
     <HashRouter>
@@ -435,5 +437,4 @@ const App: React.FC = () => {
   );
 };
 
-// Fixing the missing default export
 export default App;
