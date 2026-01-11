@@ -17,7 +17,8 @@ import {
   Flame,
   Zap,
   Globe,
-  X
+  X,
+  Box
 } from 'lucide-react';
 
 interface PodGridProps {
@@ -36,6 +37,18 @@ const ChromeLogo = ({ active }: { active: boolean }) => (
 );
 
 const PodGrid: React.FC<PodGridProps> = ({ pods, onSync, onRemove, antiGravity, debugMode }) => {
+  if (pods.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] border-2 border-dashed border-slate-800/50 rounded-2xl bg-slate-900/10 p-8 text-center mx-4">
+        <Box size={48} className="text-slate-800 mb-4" />
+        <h3 className="text-sm font-bold text-slate-500 mb-2 uppercase tracking-[0.2em]">No Active Nodes Detected</h3>
+        <p className="text-[10px] font-mono text-slate-600 max-w-sm">
+          Neural bridge disconnected. Initialize a new handshake sequence from the launcher to establish quantum entanglement.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-10 p-4">
       {pods.map((pod) => (
@@ -118,11 +131,16 @@ const PodCard: React.FC<{
                   <button 
                     onClick={() => onRemove(pod.id)}
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
+                    aria-label={`Remove pod ${pod.name}`}
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
+               <div
+                 className="p-1 hover:bg-slate-800 rounded-md cursor-pointer"
+                 role="button"
+                 aria-label="New Tab"
+               >
                  <Plus size={14} className="text-slate-700" />
                </div>
             </div>
@@ -130,9 +148,9 @@ const PodCard: React.FC<{
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Previous tab"><ChevronLeft size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Next tab"><ChevronRightIcon size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1" aria-label="Refresh content"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -157,10 +175,11 @@ const PodCard: React.FC<{
               <button 
                 onClick={() => setLocalAr(!localAr)}
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
+                aria-label={localAr ? "Disable AR view" : "Enable AR view"}
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700" aria-label="More options"><MoreVertical size={16} /></button>
             </div>
           </div>
         </div>
