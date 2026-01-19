@@ -118,21 +118,23 @@ const PodCard: React.FC<{
                   <button 
                     onClick={() => onRemove(pod.id)}
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
+                    aria-label="Remove pod"
+                    title="Remove pod"
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
+               <button className="p-1 hover:bg-slate-800 rounded-md cursor-pointer" aria-label="New tab" title="New tab">
                  <Plus size={14} className="text-slate-700" />
-               </div>
+               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Go back" title="Go back"><ChevronLeft size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Go forward" title="Go forward"><ChevronRightIcon size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1" aria-label="Refresh" title="Refresh"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -157,10 +159,12 @@ const PodCard: React.FC<{
               <button 
                 onClick={() => setLocalAr(!localAr)}
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
+                aria-label={localAr ? "Disable AR layer" : "Enable AR layer"}
+                title={localAr ? "Disable AR layer" : "Enable AR layer"}
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700" aria-label="More options" title="More options"><MoreVertical size={16} /></button>
             </div>
           </div>
         </div>
