@@ -345,6 +345,7 @@ const Dashboard: React.FC = () => {
                     <select 
                       value={agent1} 
                       onChange={(e) => setAgent1(e.target.value as AgentType)}
+                      aria-label="Select Partner A"
                       className="bg-transparent border-none outline-none text-[11px] font-bold text-blue-400 cursor-pointer pr-2"
                     >
                       {Object.values(AgentType).map(type => <option key={type} value={type} className="bg-slate-900">{type}</option>)}
@@ -359,6 +360,7 @@ const Dashboard: React.FC = () => {
                     <select 
                       value={agent2} 
                       onChange={(e) => setAgent2(e.target.value as AgentType)}
+                      aria-label="Select Partner B"
                       className="bg-transparent border-none outline-none text-[11px] font-bold text-purple-400 cursor-pointer pr-2"
                     >
                       {Object.values(AgentType).map(type => <option key={type} value={type} className="bg-slate-900">{type}</option>)}
