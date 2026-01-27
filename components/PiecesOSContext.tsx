@@ -22,7 +22,7 @@ const PiecesOSContext: React.FC<Props> = ({ snippets, debugMode }) => {
           PIECES OS AGENT
         </h2>
         <div className="flex gap-1.5">
-           <button className="p-1.5 bg-cyan-950/40 text-cyan-500 hover:bg-cyan-900/60 rounded-md border border-cyan-800/30 transition-colors">
+           <button aria-label="Search context" className="p-1.5 bg-cyan-950/40 text-cyan-500 hover:bg-cyan-900/60 rounded-md border border-cyan-800/30 transition-colors">
              <Search size={14} />
            </button>
         </div>
