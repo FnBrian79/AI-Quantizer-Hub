@@ -117,22 +117,23 @@ const PodCard: React.FC<{
                   <span className="truncate font-bold tracking-tight">{pod.name} – {performanceTag}</span>
                   <button 
                     onClick={() => onRemove(pod.id)}
+                    aria-label="Remove pod"
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
+               <button type="button" aria-label="Add new pod" className="p-1 hover:bg-slate-800 rounded-md cursor-pointer border-none bg-transparent">
                  <Plus size={14} className="text-slate-700" />
-               </div>
+               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button aria-label="Previous view" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
+               <button aria-label="Next view" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
+               <button aria-label="Refresh pod" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -147,6 +148,7 @@ const PodCard: React.FC<{
               <ShieldCheck size={12} className={`${isRunning ? 'text-emerald-500' : 'text-slate-800'}`} />
               <input 
                 readOnly 
+                aria-label="Pod URL"
                 value={pod.url || `https://${pod.id.toLowerCase()}.quantizer.ai/node-stream`} 
                 className={`bg-transparent border-none outline-none text-[10px] font-mono w-full cursor-default selection:bg-blue-500/20 ${isRunning ? 'text-blue-300' : 'text-slate-700'}`}
               />
@@ -156,11 +158,12 @@ const PodCard: React.FC<{
             <div className="flex gap-1">
               <button 
                 onClick={() => setLocalAr(!localAr)}
+                aria-label="Toggle AR view"
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button aria-label="More options" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
             </div>
           </div>
         </div>
