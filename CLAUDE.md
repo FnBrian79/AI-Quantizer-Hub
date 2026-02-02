@@ -77,9 +77,67 @@ All application state lives in `App.tsx` via React `useState` hooks — no exter
 
 `@/*` maps to the project root (configured in both `vite.config.ts` and `tsconfig.json`).
 
-## Deployment
+## Infrastructure — "The GKE Dojo"
 
-The GitHub Actions workflow (`.github/workflows/google.yml`) builds a Docker container, pushes it to Google Artifact Registry, and deploys to a GKE cluster using Kustomize. The workflow is a template — GCP project/cluster values must be configured before use.
+### Hardware: "The Beast" (New Metal)
+
+- **GPU**: NVIDIA RTX 5070
+- **CUDA**: 13.1 installed on host
+- **OS Layer**: Windows + WSL 2 (Docker Desktop integration)
+- GPU access confirmed inside Docker containers via `nvidia-smi`
+
+### Runtime Environment
+
+- **Docker Desktop** running on Windows, integrated with WSL 2
+- Containers run inside WSL with GPU passthrough for accelerated AI workloads
+- `docker-compose` may need explicit installation inside WSL (not bundled by default)
+
+### GKE (Google Kubernetes Engine)
+
+- **Project**: MYthOS (Google Cloud)
+- Deployment via GitHub Actions (`.github/workflows/google.yml`) — builds a Docker container, pushes to Google Artifact Registry, deploys to GKE using Kustomize
+- Workflow is a template — GCP project/cluster values must be configured before use
+- Requires: service accounts, API keys, OAuth config, Workload Identity Federation
+
+### Deployed Services
+
+- **Sovereign Chronicler**: FastAPI service with async Google Drive sync, deployed to GKE. Configured with `Deployment`, `Service`, and `PVC` manifests in `deployment.yaml`.
+
+### Key Infrastructure Concepts
+
+- **GKE Dojo**: The full agentic AI ecosystem running across GKE + local RTX backbone
+- **Sovereign Sanctuary**: The secure operational environment for agent orchestration
+- **Gristle Processing**: GPU-intensive AI workloads running on The Beast
+- **Self-Evolving Contracts**: Prompt lineage tracked in `lineage.jsonl` within the Sanctum
+
+## Security — ISOKrypt Architecture
+
+ISOKrypt is the security architecture for the Sovereign Sanctuary. Key protocols:
+
+- **Cryo-Chamber**: Isolation and containment protocol for compromised components
+- **Lien-Enforcement**: Access control and resource governance protocol
+- Designed for self-healing and security resilience across the distributed agent ecosystem
+
+## Automation — "The Gauntlet"
+
+Playwright is being set up for automation and testing within the GKE Dojo. This covers:
+
+- End-to-end testing of the dashboard UI
+- Automated interaction frameworks for agent orchestration validation
+
+## Current Priorities
+
+1. **Docker/WSL integration** — ensure `docker` CLI is consistently available inside WSL
+2. **Hardware validation** — verify NVIDIA drivers, CUDA toolkit, and GPU access within WSL for The Beast
+3. **ISOKrypt conceptualization** — draft core architecture, Cryo-Chamber protocols, Lien-Enforcement protocol
+4. **Playwright setup** — configure "The Gauntlet" automation framework
+5. **Google Cloud credentials** — finalize IAM, service accounts, and OAuth for Project MYthOS
+
+## Known Blockers
+
+- `docker` CLI not consistently available inside WSL — blocks GKE Dojo setup and hardware validation
+- Remote desktop connectivity to The Beast is unreliable — limits remote troubleshooting
+- `docker-compose` not found in terminal — blocks use of `docker-compose.prod.yml` for multi-service deployments
 
 ## Code Conventions
 
