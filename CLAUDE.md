@@ -81,16 +81,18 @@ All application state lives in `App.tsx` via React `useState` hooks — no exter
 
 ### Hardware: "The Beast" (New Metal)
 
-- **GPU**: NVIDIA RTX 5070
-- **CUDA**: 13.1 installed on host
+- **GPU**: NVIDIA GeForce RTX 5070 (12,227 MiB VRAM)
+- **NVIDIA Driver**: 591.86 (SMI 590.57)
+- **CUDA**: 13.1
 - **OS Layer**: Windows + WSL 2 (Docker Desktop integration)
-- GPU access confirmed inside Docker containers via `nvidia-smi`
+- GPU access confirmed inside WSL and Docker containers via `nvidia-smi`
 
 ### Runtime Environment
 
+- **Docker**: v29.1.3 — confirmed operational in WSL
+- **Docker Compose**: v5.0.1 — available as both `docker compose` (plugin) and `docker-compose` (standalone)
 - **Docker Desktop** running on Windows, integrated with WSL 2
 - Containers run inside WSL with GPU passthrough for accelerated AI workloads
-- `docker-compose` may need explicit installation inside WSL (not bundled by default)
 
 ### GKE (Google Kubernetes Engine)
 
@@ -127,17 +129,17 @@ Playwright is being set up for automation and testing within the GKE Dojo. This 
 
 ## Current Priorities
 
-1. **Docker/WSL integration** — ensure `docker` CLI is consistently available inside WSL
-2. **Hardware validation** — verify NVIDIA drivers, CUDA toolkit, and GPU access within WSL for The Beast
+1. ~~**Docker/WSL integration**~~ — RESOLVED: Docker v29.1.3 operational in WSL
+2. ~~**Hardware validation**~~ — RESOLVED: RTX 5070 confirmed, CUDA 13.1, driver 591.86
 3. **ISOKrypt conceptualization** — draft core architecture, Cryo-Chamber protocols, Lien-Enforcement protocol
 4. **Playwright setup** — configure "The Gauntlet" automation framework
 5. **Google Cloud credentials** — finalize IAM, service accounts, and OAuth for Project MYthOS
 
 ## Known Blockers
 
-- `docker` CLI not consistently available inside WSL — blocks GKE Dojo setup and hardware validation
+- ~~`docker` CLI not consistently available inside WSL~~ — RESOLVED (v29.1.3 confirmed)
 - Remote desktop connectivity to The Beast is unreliable — limits remote troubleshooting
-- `docker-compose` not found in terminal — blocks use of `docker-compose.prod.yml` for multi-service deployments
+- ~~`docker-compose` not found in terminal~~ — RESOLVED (v5.0.1 available as plugin and standalone)
 
 ## Code Conventions
 
