@@ -83,6 +83,7 @@ const PromptEvolution: React.FC<Props> = ({ contract, onUpdate }) => {
                 onClick={handleConnectRepo}
                 disabled={!repoInput || isConnecting}
                 className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${isConnecting ? 'bg-slate-800 text-slate-500 cursor-wait' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'}`}
+                aria-label="Connect repository"
               >
                 {isConnecting ? '...' : <LinkIcon size={12} />}
               </button>
