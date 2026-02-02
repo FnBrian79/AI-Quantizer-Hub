@@ -112,12 +112,25 @@ All application state lives in `App.tsx` via React `useState` hooks — no exter
 - **Gristle Processing**: GPU-intensive AI workloads running on The Beast
 - **Self-Evolving Contracts**: Prompt lineage tracked in `lineage.jsonl` within the Sanctum
 
-## Security — ISOKrypt Architecture
+## Security — ISOKrypt Architecture (FORGE_PRIORITY_ZERO — Complete)
 
-ISOKrypt is the security architecture for the Sovereign Sanctuary. Key protocols:
+ISOKrypt is the security architecture for the Sovereign Sanctuary. Conceptualization is complete; protocols are defined.
 
-- **Cryo-Chamber**: Isolation and containment protocol for compromised components
-- **Lien-Enforcement**: Access control and resource governance protocol
+### `.sanctum/` Directory (pending commit to repo)
+
+```
+.sanctum/
+├── vault/                          # Secure artifact storage
+├── protocols/
+│   ├── cryo_chamber.md             # State-freezing / isolation protocol for compromised components
+│   └── lien_enforcement.md         # Agentic Security Gateway — access control and resource governance
+└── lineage.jsonl                   # Genesis-stamped secure lineage log
+```
+
+### Key Protocols
+
+- **Cryo-Chamber**: Isolation and containment — freezes state of compromised components for forensic analysis and recovery
+- **Lien-Enforcement**: Access control and resource governance for the Agentic Security Gateway
 - Designed for self-healing and security resilience across the distributed agent ecosystem
 
 ## Automation — "The Gauntlet"
@@ -131,7 +144,7 @@ Playwright is being set up for automation and testing within the GKE Dojo. This 
 
 1. ~~**Docker/WSL integration**~~ — RESOLVED: Docker v29.1.3 operational in WSL
 2. ~~**Hardware validation**~~ — RESOLVED: RTX 5070 confirmed, CUDA 13.1, driver 591.86
-3. **ISOKrypt conceptualization** — draft core architecture, Cryo-Chamber protocols, Lien-Enforcement protocol
+3. ~~**ISOKrypt conceptualization**~~ — RESOLVED: architecture defined, protocols in `.sanctum/` (pending commit)
 4. **Playwright setup** — configure "The Gauntlet" automation framework
 5. **Google Cloud credentials** — finalize IAM, service accounts, and OAuth for Project MYthOS
 
