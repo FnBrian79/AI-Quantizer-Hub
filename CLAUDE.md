@@ -133,6 +133,34 @@ ISOKrypt is the security architecture for the Sovereign Sanctuary. Conceptualiza
 - **Lien-Enforcement**: Access control and resource governance for the Agentic Security Gateway
 - Designed for self-healing and security resilience across the distributed agent ecosystem
 
+## MCP Integration — ClickUp + Gemini CLI
+
+The Gemini CLI connects to ClickUp via Model Context Protocol (MCP) for autonomous task routing and productivity reflection.
+
+### Configuration
+
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "clickup": {
+      "command": "npx",
+      "args": ["-y", "@taazkareem/clickup-mcp-server@latest"],
+      "env": {
+        "CLICKUP_API_KEY": "<from ClickUp Settings > Apps>",
+        "CLICKUP_TEAM_ID": "<number after app.clickup.com/ in browser URL>"
+      }
+    }
+  }
+}
+```
+
+### Hybrid Agent Patterns
+
+- **Task Triage Sentinel** — scans IT Service Desk list, auto-prioritizes GKE/NVIDIA tasks, assigns to Brian, comments with ISOKrypt Sentinel triage stamp
+- **Morning Focus Coach** — analyzes recently updated tasks across IT lists, surfaces top 3 focus items, flags idle tasks
+
 ## Automation — "The Gauntlet"
 
 Playwright is being set up for automation and testing within the GKE Dojo. This covers:
@@ -145,8 +173,9 @@ Playwright is being set up for automation and testing within the GKE Dojo. This 
 1. ~~**Docker/WSL integration**~~ — RESOLVED: Docker v29.1.3 operational in WSL
 2. ~~**Hardware validation**~~ — RESOLVED: RTX 5070 confirmed, CUDA 13.1, driver 591.86
 3. ~~**ISOKrypt conceptualization**~~ — RESOLVED: architecture defined, protocols in `.sanctum/` (pending commit)
-4. **Playwright setup** — configure "The Gauntlet" automation framework
-5. **Google Cloud credentials** — finalize IAM, service accounts, and OAuth for Project MYthOS
+4. **ClickUp MCP integration** — configure Gemini CLI settings, validate API key and team ID
+5. **Playwright setup** — configure "The Gauntlet" automation framework
+6. **Google Cloud credentials** — finalize IAM, service accounts, and OAuth for Project MYthOS
 
 ## Known Blockers
 
