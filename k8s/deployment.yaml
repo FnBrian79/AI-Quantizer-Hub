@@ -20,6 +20,9 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+          # NOTE: This exposes HTTP only (port 80). For production with HTTPS,
+          # use an Ingress with TLS termination instead of exposing this port directly.
+          # See DEPLOYMENT.md for HTTPS configuration options.
         env:
         - name: GEMINI_API_KEY
           valueFrom:
@@ -27,6 +30,9 @@ spec:
               name: ai-quantizer-secrets
               key: gemini-api-key
         resources:
+          # Resource limits are conservative for a static React/Nginx application.
+          # Monitor actual usage with `kubectl top pods` and adjust as needed.
+          # Typical usage: ~50Mi memory, ~50m CPU under normal load.
           requests:
             memory: "128Mi"
             cpu: "100m"

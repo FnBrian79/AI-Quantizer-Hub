@@ -16,10 +16,18 @@ PROJECT_ID="${GCP_PROJECT_ID}"
 REGION="${GCP_REGION:-us-central1}"
 CLUSTER_NAME="${GKE_CLUSTER_NAME:-ai-quantizer-cluster}"
 IMAGE_NAME="ai-quantizer-hub"
-IMAGE_TAG="${IMAGE_TAG:-$(date +%Y%m%d-%H%M%S)}"  # Use timestamp by default for versioning
+# Default to timestamp for development, but recommend semantic versioning for production
+# For production: export IMAGE_TAG=v1.0.0 before running this script
+IMAGE_TAG="${IMAGE_TAG:-$(date +%Y%m%d-%H%M%S)}"
 
 echo -e "${GREEN}=== AI Quantizer Hub GKE Deployment ===${NC}"
 echo -e "${YELLOW}Image will be tagged as: ${IMAGE_TAG}${NC}"
+
+# Recommend semantic versioning for production
+if [[ ! "$IMAGE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+    echo -e "${YELLOW}Warning: Using non-semantic version tag: ${IMAGE_TAG}${NC}"
+    echo -e "${YELLOW}For production, use semantic versioning: export IMAGE_TAG=v1.0.0${NC}"
+fi
 
 # Check if PROJECT_ID is set
 if [ -z "$PROJECT_ID" ]; then
@@ -36,6 +44,8 @@ fi
 
 # Step 1: Build Docker image
 echo -e "${GREEN}Step 1: Building Docker image...${NC}"
+# Try to use cache from latest tag if it exists (ignore errors on first build)
+docker pull gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest 2>/dev/null || true
 docker build --cache-from gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest \
   -t gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${IMAGE_TAG} \
   -t gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest .

@@ -6,6 +6,12 @@ metadata:
     app: ai-quantizer-hub
 spec:
   type: LoadBalancer
+  # SECURITY WARNING: LoadBalancer creates a public endpoint without authentication!
+  # For production:
+  # - Use Ingress with Cloud IAP for authentication
+  # - Configure Cloud Armor for DDoS protection and IP allowlists
+  # - Consider using type: ClusterIP with Ingress instead
+  # - See DEPLOYMENT.md for detailed security configuration
   selector:
     app: ai-quantizer-hub
   ports:
