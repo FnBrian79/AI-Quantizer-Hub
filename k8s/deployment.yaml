@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-quantizer-hub
+  labels:
+    app: ai-quantizer-hub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-quantizer-hub
+  template:
+    metadata:
+      labels:
+        app: ai-quantizer-hub
+    spec:
+      containers:
+      - name: ai-quantizer-hub
+        image: gcr.io/PROJECT_ID/ai-quantizer-hub:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-quantizer-secrets
+              key: gemini-api-key
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
