@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-quantizer-hub
+  labels:
+    app: ai-quantizer-hub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-quantizer-hub
+  template:
+    metadata:
+      labels:
+        app: ai-quantizer-hub
+    spec:
+      containers:
+      - name: ai-quantizer-hub
+        image: gcr.io/PROJECT_ID/ai-quantizer-hub:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          # NOTE: This exposes HTTP only (port 80). For production with HTTPS,
+          # use an Ingress with TLS termination instead of exposing this port directly.
+          # See DEPLOYMENT.md for HTTPS configuration options.
+        env:
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-quantizer-secrets
+              key: gemini-api-key
+        resources:
+          # Resource limits are conservative for a static React/Nginx application.
+          # Monitor actual usage with `kubectl top pods` and adjust as needed.
+          # Typical usage: ~50Mi memory, ~50m CPU under normal load.
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
