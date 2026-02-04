@@ -431,12 +431,156 @@ gcloud container clusters delete $GKE_CLUSTER_NAME --region $GCP_REGION
 
 ## Security Best Practices
 
+**⚠️ IMPORTANT SECURITY NOTES:**
+
+### 1. LoadBalancer Without Authentication
+The default service configuration uses a LoadBalancer which creates a **public endpoint without authentication**. For production:
+
+- **Option A:** Use Cloud Armor with load balancer for DDoS protection and access control:
+  ```bash
+  # Create security policy
+  gcloud compute security-policies create ai-quantizer-policy \
+    --description "Security policy for AI Quantizer Hub"
+  
+  # Add rules (example: allow only specific IPs)
+  gcloud compute security-policies rules create 1000 \
+    --security-policy ai-quantizer-policy \
+    --expression "origin.ip == '203.0.113.0/24'" \
+    --action "allow"
+  ```
+
+- **Option B:** Use GKE Ingress with Cloud Identity-Aware Proxy (IAP):
+  ```bash
+  # Enables authentication before reaching your app
+  gcloud services enable iap.googleapis.com
+  ```
+
+- **Option C:** Implement authentication in the application layer
+- **Option D:** Use VPC firewall rules to restrict access by IP
+
+### 2. HTTPS/TLS Configuration
+The current setup uses HTTP only. For production, **always use HTTPS**:
+
+#### Method 1: Google-managed SSL Certificate (Recommended)
+```bash
+# 1. Reserve a static IP
+gcloud compute addresses create ai-quantizer-ip --global
+
+# 2. Create managed certificate
+gcloud compute ssl-certificates create ai-quantizer-cert \
+  --domains=your-domain.com
+
+# 3. Configure Ingress (create k8s/ingress.yaml):
+```
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-quantizer-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "ai-quantizer-ip"
+    networking.gke.io/managed-certificates: "ai-quantizer-cert"
+spec:
+  rules:
+  - host: your-domain.com
+    http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ai-quantizer-hub-service
+            port:
+              number: 80
+```
+
+#### Method 2: Let's Encrypt with cert-manager
+```bash
+# Install cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+
+# Create ClusterIssuer and Certificate resources
+```
+
+#### Method 3: Nginx with SSL in container
+Update nginx.conf to include SSL configuration with proper certificates.
+
+### 3. API Key Management
+Current setup uses Kubernetes secrets. For production, consider:
+
+- **Google Secret Manager** (Recommended):
+  ```bash
+  # Store secret in Secret Manager
+  echo -n "your-api-key" | gcloud secrets create gemini-api-key \
+    --data-file=- --replication-policy="automatic"
+  
+  # Grant access to GKE service account
+  gcloud secrets add-iam-policy-binding gemini-api-key \
+    --member="serviceAccount:PROJECT_ID.svc.id.goog[default/default]" \
+    --role="roles/secretmanager.secretAccessor"
+  
+  # Update deployment to use Secret Manager CSI driver
+  ```
+
+### 4. Image Versioning
+The deployment uses versioned tags by default now (timestamp-based). For production:
+- Use semantic versioning (v1.0.0, v1.0.1, etc.)
+- Set IMAGE_TAG environment variable: `export IMAGE_TAG=v1.0.0`
+- Never use `latest` tag in production
+- Maintain an image registry with vulnerability scanning
+
+### 5. Network Policies
+Implement network policies to restrict pod-to-pod communication:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ai-quantizer-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: ai-quantizer-hub
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector: {}
+  egress:
+  - to:
+    - namespaceSelector: {}
+```
+
+### 6. Additional Security Measures
+
 1. **Use Secret Manager instead of Kubernetes secrets** (for production)
-2. **Enable Binary Authorization**
-3. **Use private clusters**
+2. **Enable Binary Authorization**:
+   ```bash
+   gcloud container clusters update $GKE_CLUSTER_NAME \
+     --enable-binauthz --region=$GCP_REGION
+   ```
+3. **Use private clusters**:
+   ```bash
+   gcloud container clusters create $GKE_CLUSTER_NAME \
+     --enable-private-nodes \
+     --enable-private-endpoint \
+     --master-ipv4-cidr 172.16.0.0/28
+   ```
 4. **Enable Pod Security Policies**
-5. **Regularly update cluster and node versions**
+5. **Regularly update cluster and node versions**:
+   ```bash
+   gcloud container clusters upgrade $GKE_CLUSTER_NAME --region=$GCP_REGION
+   ```
 6. **Use least privilege IAM roles**
+7. **Enable Workload Identity**:
+   ```bash
+   gcloud container clusters update $GKE_CLUSTER_NAME \
+     --workload-pool=PROJECT_ID.svc.id.goog --region=$GCP_REGION
+   ```
+8. **Scan images for vulnerabilities** using Container Analysis
+9. **Enable audit logging**
+10. **Use resource quotas and limits** (already configured)
 
 ## Support and Resources
 

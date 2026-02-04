@@ -40,7 +40,10 @@ This repository includes everything you need to deploy the AI Quantizer Hub to G
    export GEMINI_API_KEY=your-gemini-api-key
    export GKE_CLUSTER_NAME=ai-quantizer-cluster  # optional, defaults to ai-quantizer-cluster
    export GCP_REGION=us-central1  # optional, defaults to us-central1
+   export IMAGE_TAG=v1.0.0  # optional, uses timestamp if not set
    ```
+
+   **Note:** For production, use semantic versioning (e.g., v1.0.0) instead of timestamps.
 
 2. **Ensure your GKE cluster exists (create one if needed):**
    ```bash
@@ -131,6 +134,19 @@ The deployment includes:
 - **Kubernetes Deployment**: Runs 2 replicas with health checks and resource limits
 - **Kubernetes Service**: LoadBalancer type service for external access
 - **Secrets Management**: Secure handling of API keys via Kubernetes secrets
+
+### Security Considerations
+
+⚠️ **IMPORTANT**: The default configuration creates a public endpoint without authentication.
+
+For production deployments, you should:
+1. **Enable HTTPS/TLS** using Google-managed certificates or Let's Encrypt
+2. **Add authentication** using Cloud IAP or application-level auth
+3. **Restrict access** using Cloud Armor, VPC firewall rules, or IP allowlists
+4. **Use versioned image tags** instead of timestamp-based tags
+5. **Store secrets in Secret Manager** instead of Kubernetes secrets
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed security best practices.
 
 ### Troubleshooting
 

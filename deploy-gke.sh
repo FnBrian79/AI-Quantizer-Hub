@@ -16,9 +16,10 @@ PROJECT_ID="${GCP_PROJECT_ID}"
 REGION="${GCP_REGION:-us-central1}"
 CLUSTER_NAME="${GKE_CLUSTER_NAME:-ai-quantizer-cluster}"
 IMAGE_NAME="ai-quantizer-hub"
-IMAGE_TAG="${IMAGE_TAG:-latest}"
+IMAGE_TAG="${IMAGE_TAG:-$(date +%Y%m%d-%H%M%S)}"  # Use timestamp by default for versioning
 
 echo -e "${GREEN}=== AI Quantizer Hub GKE Deployment ===${NC}"
+echo -e "${YELLOW}Image will be tagged as: ${IMAGE_TAG}${NC}"
 
 # Check if PROJECT_ID is set
 if [ -z "$PROJECT_ID" ]; then
@@ -35,11 +36,14 @@ fi
 
 # Step 1: Build Docker image
 echo -e "${GREEN}Step 1: Building Docker image...${NC}"
-docker build -t gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${IMAGE_TAG} .
+docker build --cache-from gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest \
+  -t gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${IMAGE_TAG} \
+  -t gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest .
 
 # Step 2: Push to Google Container Registry
 echo -e "${GREEN}Step 2: Pushing image to GCR...${NC}"
 docker push gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${IMAGE_TAG}
+docker push gcr.io/${PROJECT_ID}/${IMAGE_NAME}:latest
 
 # Step 3: Update deployment manifest with project ID
 echo -e "${GREEN}Step 3: Updating Kubernetes manifests...${NC}"
