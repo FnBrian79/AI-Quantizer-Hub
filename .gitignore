@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Forge – downloaded models and quantized outputs (keep dirs via .gitkeep)
+models/*
+!models/.gitkeep
+out/*
+!out/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/

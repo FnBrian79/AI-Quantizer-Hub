@@ -1,0 +1,22 @@
+# Forge default configuration
+# Tuned for NVIDIA RTX 5070 12 GB VRAM
+
+# ── Model targets ──────────────────────────────────────────────────────────────
+models:
+  - repo_id: "TheBloke/Mistral-7B-v0.1-GGUF"          # 7B example (pre-built GGUF)
+    quant_types: ["Q4_K_M", "Q5_K_M"]
+  - repo_id: "bartowski/Qwen2.5-14B-Instruct-GGUF"    # 14B example (pre-built GGUF)
+    quant_types: ["Q4_K_M"]
+
+# ── Directories ────────────────────────────────────────────────────────────────
+cache_dir: "/cache/models"      # HF snapshot download cache inside container
+output_dir: "/out"              # Quantized GGUF output directory
+
+# ── llama.cpp paths (set inside Docker image) ──────────────────────────────────
+llama_cpp_dir: "/opt/llama.cpp"
+convert_script: "/opt/llama.cpp/convert_hf_to_gguf.py"
+quantize_bin: "/opt/llama.cpp/build/bin/llama-quantize"
+
+# ── Pipeline behaviour ─────────────────────────────────────────────────────────
+skip_existing: true             # Skip re-downloading/re-quantizing existing files
+log_level: "INFO"
