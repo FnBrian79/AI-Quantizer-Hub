@@ -1,0 +1,11 @@
+# Forge Configuration: RTX 5070 (12GB)
+    device: cuda
+    vram_limit_gb: 12
+    precision: float16
+    target_models:
+      - size: "7B"
+        quant_types: ["Q4_K_M", "GPTQ", "AWQ"]
+      - size: "14B"
+        quant_types: ["Q4_K_M"]
+    calibration_dataset: "wikitext2"
+    sovereign_mode: true
