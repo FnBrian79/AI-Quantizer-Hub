@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ai-quantizer-hub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-quantizer-hub
+    ports:
+      - "3000:3000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - NODE_ENV=production
+    env_file:
+      - .env.local
+    restart: unless-stopped
+    networks:
+      - hub-network
+    # GPU support - uncomment if you have NVIDIA Docker runtime installed
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  hub-network:
+    driver: bridge
+
+volumes:
+  node_modules:

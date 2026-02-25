@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quantizer Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .mono {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .gemini-active-node {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* The Snake: Now a static colorful border highlight */
+        .gemini-active-node::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 1.25rem;
+            z-index: -1;
+        }
+
+        /* BLUE: Ready to go (Static) */
+        .snake-blue::before {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        /* GREEN: Going Good (Static) */
+        .snake-green::before {
+            background: linear-gradient(135deg, #22c55e, #166534);
+        }
+
+        /* YELLOW: Heating Up (Static) */
+        .snake-yellow::before {
+            background: linear-gradient(135deg, #eab308, #854d0e);
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
+        }
+
+        /* RED: Cream of the Crop (Static) */
+        .snake-red::before {
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .node-container {
+            transition: none; /* Removed transition animation */
+            background: #0a0a0a;
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+        }
+
+        .gemini-active-node .node-container {
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .chrome-logo-active {
+            border: 2px solid #fbbf24;
+            border-radius: 50%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+<!-- importmap removed: Vite handles all module resolution via node_modules -->
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

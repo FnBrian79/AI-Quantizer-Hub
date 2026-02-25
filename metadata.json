@@ -1,0 +1,5 @@
+{
+  "name": "AI Quantizer Hub",
+  "description": "A high-performance dashboard for managing parallel AI brainstorming sessions across GKE and local backbone nodes, featuring self-evolving prompt contracts and M2M orchestration.",
+  "requestFramePermissions": []
+}

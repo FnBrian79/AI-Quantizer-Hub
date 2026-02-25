@@ -1,0 +1,2 @@
+/* Global baseline — Tailwind CDN handles the rest */
+*, *::before, *::after { box-sizing: border-box; }
