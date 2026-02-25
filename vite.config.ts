@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       server: {
-        port: 3000,
+        port: 5173,        // 5173 = Vite default; avoids Docker Desktop on 3000
+        strictPort: false, // auto-advance to next port if 5173 is also taken
         host: '0.0.0.0',
       },
       plugins: [react()],
