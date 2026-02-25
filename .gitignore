@@ -19,6 +19,9 @@ dist-ssr
 secrets.json
 keys.json
 
+# Windows null device artifact
+nul
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

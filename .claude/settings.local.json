@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(timeout /t:*)",
+      "Bash(curl:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker-compose build:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker network inspect:*)",
+      "Bash(docker network:*)",
+      "Bash(docker build:*)",
+      "Bash(ollama list:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls \"/c/Users/brian/OneDrive/Documents/.FnBrian79/ai-quantizer-hub/node_modules/.bin/\"vite*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(ls:*)",
+      "Bash(git clone:*)",
+      "Bash(ssh-keygen:*)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:ollama.com)",
+      "Bash(python:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node -e:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git config:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)"
+    ]
+  }
+}
