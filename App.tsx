@@ -39,6 +39,7 @@ import PromptEvolution from './components/PromptEvolution';
 import ControlPanel from './components/ControlPanel';
 import PiecesOSContext from './components/PiecesOSContext';
 import EvolutionTimeline from './components/EvolutionTimeline';
+import { loadSecure, saveSecure } from './secureStorage';
 
 // Parse <thinking>...</thinking> from model responses (deepseek-r1 style or explicit prompt style)
 function parseThinking(raw: string): { thinking: string; answer: string } {
@@ -73,8 +74,7 @@ const Dashboard: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [architectAlert, setArchitectAlert] = useState<{ podName: string; text: string } | null>(null);
 
-  // Settings state — persisted to localStorage so API keys survive refresh
-  const SETTINGS_KEY = 'quantizer-settings-v1';
+  // Settings state — encrypted via SubtleCrypto; async-loaded on mount below.
   const defaultSettings = {
     backboneIP: '',
     backbonePort: '11434',
@@ -85,20 +85,22 @@ const Dashboard: React.FC = () => {
     anthropicApiKey: '',
     grokApiKey: '',
   };
-  const [settings, setSettings] = useState(() => {
-    try {
-      const saved = localStorage.getItem(SETTINGS_KEY);
-      if (saved) return { ...defaultSettings, ...JSON.parse(saved) };
-    } catch { /* ignore parse errors */ }
-    return defaultSettings;
-  });
-  const [settingsDraft, setSettingsDraft] = useState(settings);
+  const [settings, setSettings] = useState(defaultSettings);
+  const [settingsDraft, setSettingsDraft] = useState(defaultSettings);
 
-  // Persist settings to localStorage whenever they change
+  // Async decrypt on mount (~3ms); first render uses defaultSettings.
+  // Also auto-migrates any existing plain-text v1 entry to encrypted v2.
   useEffect(() => {
-    try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    } catch { /* quota or private-mode errors */ }
+    loadSecure(defaultSettings).then(loaded => {
+      setSettings(loaded);
+      setSettingsDraft(loaded);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fire-and-forget AES-GCM encrypt on every settings commit.
+  useEffect(() => {
+    saveSecure(settings).catch(() => {});
   }, [settings]);
 
   // Agent Selection State
