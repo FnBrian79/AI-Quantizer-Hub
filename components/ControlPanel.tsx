@@ -51,8 +51,12 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
             type="text" 
             placeholder="fnbrian@backbone:~$ "
             className="flex-1 bg-transparent border-none outline-none text-[10px] text-blue-400 font-mono"
+            aria-label="Command input"
           />
-          <button className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
+          <button
+            className="p-1 text-slate-600 hover:text-blue-400 transition-colors"
+            aria-label="Send command"
+          >
             <Send size={14} />
           </button>
         </div>
