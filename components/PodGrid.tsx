@@ -117,22 +117,46 @@ const PodCard: React.FC<{
                   <span className="truncate font-bold tracking-tight">{pod.name} – {performanceTag}</span>
                   <button 
                     onClick={() => onRemove(pod.id)}
-                    className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
+                    className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                    aria-label="Remove Pod"
+                    title="Remove Pod"
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
-                 <Plus size={14} className="text-slate-700" />
-               </div>
+               <button
+                 className="p-1 hover:bg-slate-800 rounded-md cursor-pointer text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/50"
+                 aria-label="New Tab"
+                 title="New Tab"
+               >
+                 <Plus size={14} />
+               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button
+                 className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500/50"
+                 aria-label="Go Back"
+                 title="Go Back"
+               >
+                 <ChevronLeft size={16} />
+               </button>
+               <button
+                 className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500/50"
+                 aria-label="Go Forward"
+                 title="Go Forward"
+               >
+                 <ChevronRightIcon size={16} />
+               </button>
+               <button
+                 className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1 focus:outline-none focus:ring-2 focus:ring-slate-500/50"
+                 aria-label="Reload Stream"
+                 title="Reload Stream"
+               >
+                 <RotateCw size={14} className={isRunning ? "text-blue-500" : ""} />
+               </button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -156,11 +180,19 @@ const PodCard: React.FC<{
             <div className="flex gap-1">
               <button 
                 onClick={() => setLocalAr(!localAr)}
-                className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
+                className={`p-1.5 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
+                aria-label="Toggle AR Layer"
+                title="Toggle AR Layer"
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button
+                className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/50"
+                aria-label="More Options"
+                title="More Options"
+              >
+                <MoreVertical size={16} />
+              </button>
             </div>
           </div>
         </div>
