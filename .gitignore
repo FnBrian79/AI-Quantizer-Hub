@@ -22,6 +22,31 @@ keys.json
 # Windows null device artifact
 nul
 
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Databases — never commit
+*.db
+*.sqlite
+*.sqlite3
+
+# Personal / sensitive data
+my_profile.json
+Vault/
+training_data/
+CRITICAL_FAILURE_*.json
+gotme*.json
+expanded_paper.json
+
+# Agent / tool state
+.agent/
+.genkit/
+audit_logs.db
+ledger_simulation.txt
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

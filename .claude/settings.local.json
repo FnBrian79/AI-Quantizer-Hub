@@ -32,7 +32,21 @@
       "Bash(git config:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(ipconfig:*)",
+      "Bash(ping:*)",
+      "Bash(powershell.exe -Command \"Invoke-WebRequest -Uri ''http://localhost:11434/api/tags'' | Select-Object -ExpandProperty Content\")",
+      "Bash(powershell.exe -Command \"\\(Invoke-WebRequest -Uri ''http://192.168.0.202:11434/api/tags''\\).Content\")",
+      "Bash(pip show:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(echo:*)",
+      "Bash(python3:*)",
+      "Bash(wsl -d Ubuntu -- bash -c \"sudo service ssh restart && echo ''SSH restarted''\")",
+      "Bash(wsl:*)",
+      "Bash(Test-NetConnection -ComputerName 127.0.0.1 -Port 2222 -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object TcpTestSucceeded)",
+      "Bash(powershell -Command \"netstat -ano | Select-String '':22 '' | Select-String ''LISTEN''\")",
+      "Bash(powershell -Command:*)"
     ]
   }
 }
