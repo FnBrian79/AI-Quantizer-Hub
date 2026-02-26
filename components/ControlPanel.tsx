@@ -7,8 +7,16 @@ interface Props {
 }
 
 const ControlPanel: React.FC<Props> = ({ onAction }) => {
+  const [command, setCommand] = React.useState('');
+
   const handleAction = (name: string) => {
     onAction(`Triggering action: ${name}`);
+  };
+
+  const handleInject = () => {
+    if (!command.trim()) return;
+    onAction(`Injecting neural command: ${command}`);
+    setCommand('');
   };
 
   return (
@@ -49,10 +57,18 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
         <div className="flex gap-2">
           <input 
             type="text" 
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleInject()}
             placeholder="fnbrian@backbone:~$ "
+            aria-label="Manual neural injection command"
             className="flex-1 bg-transparent border-none outline-none text-[10px] text-blue-400 font-mono"
           />
-          <button className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
+          <button
+            onClick={handleInject}
+            aria-label="Send command"
+            className="p-1 text-slate-600 hover:text-blue-400 transition-colors"
+          >
             <Send size={14} />
           </button>
         </div>
