@@ -25,7 +25,8 @@ import {
   UserPlus,
   Eye,
   Rocket,
-  ShieldAlert
+  ShieldAlert,
+  Loader2
 } from 'lucide-react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { GoogleGenAI } from "@google/genai";
@@ -53,6 +54,7 @@ const Dashboard: React.FC = () => {
   const [antiGravity, setAntiGravity] = useState<boolean>(true);
   const [debugMode, setDebugMode] = useState<boolean>(false);
   const [arMode, setArMode] = useState<boolean>(false);
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployProgress, setDeployProgress] = useState(0);
   
@@ -124,8 +126,12 @@ const Dashboard: React.FC = () => {
   }, [addLog]);
 
   const runGlobalSynthesis = async () => {
+    setIsSynthesizing(true);
     addLog("Initiating Global Neural Synthesis using Gemini-3-Flash...");
     try {
+      // Artificial delay for UX stability and to prevent flickering
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const activeThoughts = pods
         .map(p => p.lastMessage)
@@ -149,6 +155,8 @@ const Dashboard: React.FC = () => {
       }));
     } catch (error) {
       addLog(`Synthesis Error: ${error instanceof Error ? error.message : "Unknown API error"}`);
+    } finally {
+      setIsSynthesizing(false);
     }
   };
 
@@ -290,10 +298,11 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={runGlobalSynthesis}
-            className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-colors hover:bg-purple-600/40"
+            disabled={isSynthesizing}
+            className={`flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-colors ${isSynthesizing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-600/40'}`}
           >
-            <BrainCircuit size={14} />
-            GLOBAL SYNTHESIS
+            {isSynthesizing ? <Loader2 size={14} className="animate-spin" /> : <BrainCircuit size={14} />}
+            {isSynthesizing ? 'SYNTHESIZING...' : 'GLOBAL SYNTHESIS'}
           </button>
 
           <button 
