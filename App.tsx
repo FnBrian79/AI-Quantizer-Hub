@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  Activity, 
-  Settings, 
-  Terminal as TerminalIcon, 
-  Cpu, 
-  Database, 
-  RefreshCcw, 
+import {
+  Activity,
+  Settings,
+  Terminal as TerminalIcon,
+  Cpu,
+  Database,
+  RefreshCcw,
   Server,
   Play,
   Square,
@@ -25,10 +25,15 @@ import {
   UserPlus,
   Eye,
   Rocket,
-  ShieldAlert
+  ShieldAlert,
+  X,
+  KeyRound,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { GoogleGenAI } from "@google/genai";
+import { loadSecure, saveSecure } from './secureStorage';
 import { ConversationPod, BackboneState, PromptContract, PodStatus, AgentType, ContextSnippet } from './types';
 import { INITIAL_PODS, INITIAL_PROMPT_CONTRACT, AGENT_ICONS, COLORS, MOCK_SNIPPETS, SPECIAL_ICON_URL } from './constants';
 import PodGrid from './components/PodGrid';
@@ -60,10 +65,39 @@ const Dashboard: React.FC = () => {
   const [agent1, setAgent1] = useState<AgentType>(AgentType.GEMINI);
   const [agent2, setAgent2] = useState<AgentType>(AgentType.CLAUDE);
 
+  // ── Settings — encrypted via SubtleCrypto; async-loaded on mount ─────────────
+  const [showSettings, setShowSettings] = useState(false);
+  const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
+
+  const defaultSettings = {
+    backboneIP:       '192.168.0.202',
+    backbonePort:     '11434',
+    backboneModel:    '',
+    geminiApiKey:     '',
+    openaiApiKey:     '',
+    anthropicApiKey:  '',
+  };
+  const [settings, setSettings]           = useState(defaultSettings);
+  const [settingsDraft, setSettingsDraft] = useState(defaultSettings);
+
+  // Decrypt on mount (~3 ms); first render uses defaults.
+  useEffect(() => {
+    loadSecure(defaultSettings).then(loaded => {
+      setSettings(loaded);
+      setSettingsDraft(loaded);
+      if (!loaded.backboneIP) setShowSettings(true); // first-run wizard
+    });
+  }, []);
+
+  // Fire-and-forget encrypt on every settings save.
+  useEffect(() => {
+    saveSecure(settings).catch(() => {});
+  }, [settings]);
+
   const [backbone, setBackbone] = useState<BackboneState>({
-    address: '192.168.0.241',
+    address: '192.168.0.202',
     status: 'Online',
-    model: 'Llama 3.1 70B',
+    model: 'sovereign-qwen',
     memoryUsage: '42.4 / 64 GB',
     activeThreads: 12,
     synthesizedInsights: [
@@ -82,6 +116,42 @@ const Dashboard: React.FC = () => {
       ...prev.slice(0, 99)
     ]);
   }, []);
+
+  // ── Settings helpers (need addLog in scope) ───────────────────────────────
+  const testConnection = async () => {
+    if (!settingsDraft.backboneIP) return;
+    setTestStatus('testing');
+    try {
+      const res = await fetch(
+        `http://${settingsDraft.backboneIP}:${settingsDraft.backbonePort}/api/tags`,
+        { signal: AbortSignal.timeout(4000) }
+      );
+      if (res.ok) {
+        setTestStatus('ok');
+        const data = await res.json().catch(() => ({ models: [] }));
+        const models: string[] = (data.models || []).map((m: { name: string }) => m.name);
+        if (!settingsDraft.backboneModel && models.length > 0) {
+          setSettingsDraft(p => ({ ...p, backboneModel: models[0] }));
+        }
+      } else {
+        setTestStatus('fail');
+      }
+    } catch {
+      setTestStatus('fail');
+    }
+  };
+
+  const saveSettings = () => {
+    setSettings(settingsDraft);
+    setBackbone(prev => ({
+      ...prev,
+      address: settingsDraft.backboneIP,
+      model:   settingsDraft.backboneModel || prev.model,
+    }));
+    addLog(`SETTINGS: Backbone → ${settingsDraft.backboneIP}:${settingsDraft.backbonePort} | model: ${settingsDraft.backboneModel}`);
+    setShowSettings(false);
+  };
+  // ─────────────────────────────────────────────────────────────────────────────
 
   const handleUpdateContract = useCallback((updates: Partial<PromptContract>) => {
     setContract(prev => ({ ...prev, ...updates, lastUpdated: Date.now() }));
@@ -124,9 +194,14 @@ const Dashboard: React.FC = () => {
   }, [addLog]);
 
   const runGlobalSynthesis = async () => {
+    if (!settings.geminiApiKey) {
+      addLog("SYNTHESIS_ERROR: Gemini API key not set — open Settings (⚙) to add it.");
+      setShowSettings(true);
+      return;
+    }
     addLog("Initiating Global Neural Synthesis using Gemini-3-Flash...");
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: settings.geminiApiKey });
       const activeThoughts = pods
         .map(p => p.lastMessage)
         .filter(msg => msg && msg.length > 0)
@@ -314,15 +389,131 @@ const Dashboard: React.FC = () => {
             DIAGNOSTICS
           </button>
 
-          <button 
+          <button
             onClick={() => setAntiGravity(!antiGravity)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold transition-colors ${antiGravity ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.3)]' : 'bg-slate-800 text-slate-500 border-slate-700'}`}
           >
             {antiGravity ? <Zap size={14} /> : <ZapOff size={14} />}
             {antiGravity ? 'ZERO-G' : 'GRAVITY'}
           </button>
+
+          <button
+            onClick={() => { setSettingsDraft(settings); setTestStatus('idle'); setShowSettings(true); }}
+            className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700 rounded-md text-[10px] font-bold transition-colors"
+            title="Settings"
+          >
+            <Settings size={14} />
+            SETTINGS
+          </button>
         </div>
       </header>
+
+      {/* ── Settings Modal ─────────────────────────────────────────────────── */}
+      {showSettings && (
+        <div className="fixed inset-0 z-[300] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <button
+              onClick={() => setShowSettings(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                <Settings size={16} className="text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-slate-100">HUB SETTINGS</h2>
+                <p className="text-[10px] text-slate-500 font-mono">Keys encrypted with AES-GCM 256-bit</p>
+              </div>
+            </div>
+
+            {/* Backbone */}
+            <div className="mb-5">
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <Server size={10} /> Backbone (Ollama)
+              </p>
+              {!settings.backboneIP && (
+                <p className="text-[9px] text-amber-400 font-mono mb-2">⚠ No backbone configured — enter your Beast/Ollama IP below</p>
+              )}
+              <div className="flex gap-2 mb-2">
+                <input
+                  type="text" placeholder="IP (e.g. 192.168.0.202)"
+                  className="flex-[3] bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono outline-none focus:border-blue-500 transition-colors"
+                  value={settingsDraft.backboneIP}
+                  onChange={e => { setSettingsDraft(p => ({ ...p, backboneIP: e.target.value })); setTestStatus('idle'); }}
+                />
+                <input
+                  type="text" placeholder="Port"
+                  className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono outline-none focus:border-blue-500 transition-colors"
+                  value={settingsDraft.backbonePort}
+                  onChange={e => setSettingsDraft(p => ({ ...p, backbonePort: e.target.value }))}
+                />
+              </div>
+              <div className="flex gap-2 items-center mb-2">
+                <input
+                  type="text" placeholder="Model (e.g. sovereign-qwen)"
+                  className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono outline-none focus:border-blue-500 transition-colors"
+                  value={settingsDraft.backboneModel}
+                  onChange={e => setSettingsDraft(p => ({ ...p, backboneModel: e.target.value }))}
+                />
+                <button
+                  onClick={testConnection}
+                  disabled={testStatus === 'testing' || !settingsDraft.backboneIP}
+                  className="px-3 py-2 bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-lg text-[10px] font-bold transition-colors disabled:opacity-40 flex items-center gap-1.5"
+                >
+                  {testStatus === 'testing' ? <RefreshCcw size={12} className="animate-spin text-blue-400" /> :
+                   testStatus === 'ok'      ? <Wifi size={12} className="text-emerald-400" /> :
+                   testStatus === 'fail'    ? <WifiOff size={12} className="text-red-400" /> :
+                                             <Wifi size={12} className="text-slate-500" />}
+                  TEST
+                </button>
+              </div>
+              {testStatus === 'ok'   && <p className="text-[9px] text-emerald-400 font-mono">✓ Reachable at {settingsDraft.backboneIP}:{settingsDraft.backbonePort}</p>}
+              {testStatus === 'fail' && <p className="text-[9px] text-red-400 font-mono">✗ Cannot reach {settingsDraft.backboneIP}:{settingsDraft.backbonePort} — is Ollama running?</p>}
+            </div>
+
+            {/* API Keys */}
+            <div className="mb-6">
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <KeyRound size={10} /> API Keys
+              </p>
+              {[
+                { label: 'Gemini',    key: 'geminiApiKey',    placeholder: 'AIza…' },
+                { label: 'OpenAI',   key: 'openaiApiKey',    placeholder: 'sk-…'  },
+                { label: 'Anthropic', key: 'anthropicApiKey', placeholder: 'sk-ant-…' },
+              ].map(({ label, key, placeholder }) => (
+                <div key={key} className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] text-slate-500 w-16 shrink-0">{label}</span>
+                  <input
+                    type="password" placeholder={placeholder}
+                    className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono outline-none focus:border-blue-500 transition-colors"
+                    value={(settingsDraft as Record<string, string>)[key]}
+                    onChange={e => setSettingsDraft(p => ({ ...p, [key]: e.target.value }))}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSettings(false)}
+                className="flex-1 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 rounded-xl text-xs font-bold transition-colors"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={saveSettings}
+                className="flex-[2] px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors shadow-lg shadow-blue-900/40"
+              >
+                SAVE &amp; ENCRYPT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ─────────────────────────────────────────────────────────────────────── */}
 
       <main className="flex-1 overflow-auto p-6 flex gap-6 relative z-10 transition-transform duration-1000 ease-in-out">
         <div className="flex-[3] flex flex-col gap-6">

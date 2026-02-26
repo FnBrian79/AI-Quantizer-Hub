@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       server: {
-        port: 3000,
+        port: 5173,      // avoid conflict with Docker on 3000; prod container stays on 3000
+        strictPort: false,
         host: '0.0.0.0',
       },
       plugins: [react()],
