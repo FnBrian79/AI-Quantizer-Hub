@@ -1,0 +1,5 @@
+# Beast MCP Server — Python dependencies
+# Install on The Beast: pip install -r requirements.txt
+
+mcp>=1.0.0
+httpx>=0.27.0
