@@ -25,7 +25,8 @@ import {
   UserPlus,
   Eye,
   Rocket,
-  ShieldAlert
+  ShieldAlert,
+  Loader2
 } from 'lucide-react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { GoogleGenAI } from "@google/genai";
@@ -55,6 +56,7 @@ const Dashboard: React.FC = () => {
   const [arMode, setArMode] = useState<boolean>(false);
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployProgress, setDeployProgress] = useState(0);
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
   
   // Agent Selection State
   const [agent1, setAgent1] = useState<AgentType>(AgentType.GEMINI);
@@ -124,6 +126,12 @@ const Dashboard: React.FC = () => {
   }, [addLog]);
 
   const runGlobalSynthesis = async () => {
+    if (isSynthesizing) return;
+    setIsSynthesizing(true);
+
+    // Add artificial delay to prevent UI flicker and ensure loading state is perceivable
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 800));
+
     addLog("Initiating Global Neural Synthesis using Gemini-3-Flash...");
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -132,10 +140,13 @@ const Dashboard: React.FC = () => {
         .filter(msg => msg && msg.length > 0)
         .join("\n- ");
       
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Analyze these parallel neural thought streams from an anti-gravity propulsion research session and synthesize the top 3 breakthrough insights into a single sentence:\n- ${activeThoughts}`,
-      });
+      const [response] = await Promise.all([
+        ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: `Analyze these parallel neural thought streams from an anti-gravity propulsion research session and synthesize the top 3 breakthrough insights into a single sentence:\n- ${activeThoughts}`,
+        }),
+        minLoadTime
+      ]);
 
       const synthesis = response.text || "Synthesis inconclusive due to signal noise.";
       addLog(`GEMINI_SYNTHESIS: ${synthesis}`);
@@ -148,7 +159,11 @@ const Dashboard: React.FC = () => {
         ]
       }));
     } catch (error) {
+      // Ensure minimum load time even on error
+      await minLoadTime;
       addLog(`Synthesis Error: ${error instanceof Error ? error.message : "Unknown API error"}`);
+    } finally {
+      setIsSynthesizing(false);
     }
   };
 
@@ -290,10 +305,11 @@ const Dashboard: React.FC = () => {
 
           <button 
             onClick={runGlobalSynthesis}
-            className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-colors hover:bg-purple-600/40"
+            disabled={isSynthesizing}
+            className={`flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/50 rounded-md text-[10px] font-bold transition-colors ${isSynthesizing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-600/40'}`}
           >
-            <BrainCircuit size={14} />
-            GLOBAL SYNTHESIS
+            {isSynthesizing ? <Loader2 size={14} className="animate-spin" /> : <BrainCircuit size={14} />}
+            {isSynthesizing ? 'SYNTHESIZING...' : 'GLOBAL SYNTHESIS'}
           </button>
 
           <button 
