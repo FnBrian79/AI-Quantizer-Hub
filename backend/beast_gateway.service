@@ -1,0 +1,36 @@
+# /etc/systemd/system/beast-mcp.service
+#
+# Sovereign MCP Server — runs on The Beast, persists across reboots.
+#
+# Setup (run once on The Beast):
+#   sudo cp beast_gateway.service /etc/systemd/system/beast-mcp.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable beast-mcp.service
+#   sudo systemctl start beast-mcp.service
+#   sudo systemctl status beast-mcp.service
+#
+# NOTE: This service uses stdio transport (Claude Code connects via
+#       the MCP config, not a TCP port). No firewall rules needed.
+
+[Unit]
+Description=Beast Sovereign MCP Server (Ollama bridge for Claude Code)
+After=network.target ollama.service
+Wants=ollama.service
+
+[Service]
+Type=simple
+User=brian
+WorkingDirectory=/home/brian/AI-Quantizer-Hub/backend
+ExecStart=/home/brian/.venv/beast-mcp/bin/python beast_mcp_server.py
+Restart=on-failure
+RestartSec=5
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=beast-mcp
+
+# Give Ollama time to load models before we start accepting requests
+ExecStartPre=/bin/sleep 3
+
+[Install]
+WantedBy=multi-user.target
