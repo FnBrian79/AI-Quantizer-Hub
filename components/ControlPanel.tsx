@@ -52,7 +52,7 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
             placeholder="fnbrian@backbone:~$ "
             className="flex-1 bg-transparent border-none outline-none text-[10px] text-blue-400 font-mono"
           />
-          <button className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
+          <button aria-label="Send injection" className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
             <Send size={14} />
           </button>
         </div>
