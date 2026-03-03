@@ -116,23 +116,31 @@ const PodCard: React.FC<{
                   <ChromeLogo active={isRunning} />
                   <span className="truncate font-bold tracking-tight">{pod.name} – {performanceTag}</span>
                   <button 
+                    type="button"
                     onClick={() => onRemove(pod.id)}
+                    aria-label={`Close ${pod.name}`}
+                    title="Close pod"
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
+               <button
+                 type="button"
+                 aria-label="New Tab"
+                 title="New Tab"
+                 className="p-1 hover:bg-slate-800 rounded-md cursor-pointer"
+               >
                  <Plus size={14} className="text-slate-700" />
-               </div>
+               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button type="button" aria-label="Go Back" title="Go Back" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
+               <button type="button" aria-label="Go Forward" title="Go Forward" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
+               <button type="button" aria-label="Reload" title="Reload" className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -155,12 +163,23 @@ const PodCard: React.FC<{
 
             <div className="flex gap-1">
               <button 
+                type="button"
                 onClick={() => setLocalAr(!localAr)}
+                aria-label={localAr ? "Disable Local AR View" : "Enable Local AR View"}
+                title={localAr ? "Disable Local AR View" : "Enable Local AR View"}
+                aria-pressed={localAr}
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button
+                type="button"
+                aria-label="More Options"
+                title="More Options"
+                className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"
+              >
+                <MoreVertical size={16} />
+              </button>
             </div>
           </div>
         </div>
