@@ -118,6 +118,8 @@ const PodCard: React.FC<{
                   <button 
                     onClick={() => onRemove(pod.id)}
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
+                    aria-label="Close Pod"
+                    title="Close Pod"
                   >
                     <X size={12} />
                   </button>
@@ -130,9 +132,9 @@ const PodCard: React.FC<{
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Go Back" title="Go Back"><ChevronLeft size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Go Forward" title="Go Forward"><ChevronRightIcon size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1" aria-label="Reload Page" title="Reload Page"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
@@ -157,10 +159,12 @@ const PodCard: React.FC<{
               <button 
                 onClick={() => setLocalAr(!localAr)}
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
+                aria-label="Toggle AR Layer"
+                title="Toggle AR Layer"
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700" aria-label="More Options" title="More Options"><MoreVertical size={16} /></button>
             </div>
           </div>
         </div>
