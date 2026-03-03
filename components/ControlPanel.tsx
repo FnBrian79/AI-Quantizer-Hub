@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Play, Square, RefreshCcw, Send, Settings2, Bug, Zap } from 'lucide-react';
 
 interface Props {
@@ -7,8 +7,22 @@ interface Props {
 }
 
 const ControlPanel: React.FC<Props> = ({ onAction }) => {
+  const [inputValue, setInputValue] = useState('');
+
   const handleAction = (name: string) => {
     onAction(`Triggering action: ${name}`);
+  };
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+    onAction(`Manual Injection: ${inputValue}`);
+    setInputValue('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
   };
 
   return (
@@ -50,9 +64,18 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
           <input 
             type="text" 
             placeholder="fnbrian@backbone:~$ "
+            aria-label="Manual command input"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="flex-1 bg-transparent border-none outline-none text-[10px] text-blue-400 font-mono"
           />
-          <button className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
+          <button
+            onClick={handleSend}
+            aria-label="Send command"
+            disabled={!inputValue.trim()}
+            className={`p-1 transition-colors ${!inputValue.trim() ? 'text-slate-700 cursor-not-allowed' : 'text-slate-600 hover:text-blue-400 cursor-pointer'}`}
+          >
             <Send size={14} />
           </button>
         </div>
