@@ -50,9 +50,13 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
           <input 
             type="text" 
             placeholder="fnbrian@backbone:~$ "
+            aria-label="Manual injection command input"
             className="flex-1 bg-transparent border-none outline-none text-[10px] text-blue-400 font-mono"
           />
-          <button className="p-1 text-slate-600 hover:text-blue-400 transition-colors">
+          <button
+            aria-label="Send manual injection"
+            className="p-1 text-slate-600 hover:text-blue-400 transition-colors"
+          >
             <Send size={14} />
           </button>
         </div>
