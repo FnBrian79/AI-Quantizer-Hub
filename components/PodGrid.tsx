@@ -117,25 +117,30 @@ const PodCard: React.FC<{
                   <span className="truncate font-bold tracking-tight">{pod.name} – {performanceTag}</span>
                   <button 
                     onClick={() => onRemove(pod.id)}
+                    aria-label={`Close ${pod.name}`}
                     className="ml-auto p-0.5 hover:bg-slate-800 text-slate-700 hover:text-rose-400 rounded transition-colors"
                   >
                     <X size={12} />
                   </button>
                </div>
-               <div className="p-1 hover:bg-slate-800 rounded-md cursor-pointer">
+               <button
+                 className="p-1 hover:bg-slate-800 rounded-md cursor-pointer"
+                 aria-label="New Tab"
+               >
                  <Plus size={14} className="text-slate-700" />
-               </div>
+               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex gap-1 items-center">
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronLeft size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500"><ChevronRightIcon size={16} /></button>
-               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Previous"><ChevronLeft size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500" aria-label="Next"><ChevronRightIcon size={16} /></button>
+               <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-500 mr-1" aria-label="Reload"><RotateCw size={14} className={isRunning ? "text-blue-500" : ""} /></button>
                
                <button 
                   onClick={() => onSync(pod)}
+                  aria-label="Sync Pod"
                   className={`flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-500 active:scale-95 shadow-lg ${isRunning ? 'ring-1 ring-blue-400' : ''}`}
                 >
                   <ArrowUpCircle size={14} />
@@ -156,11 +161,12 @@ const PodCard: React.FC<{
             <div className="flex gap-1">
               <button 
                 onClick={() => setLocalAr(!localAr)}
+                aria-label={localAr ? "Disable AR View" : "Enable AR View"}
                 className={`p-1.5 rounded-md ${localAr ? 'text-cyan-400 bg-cyan-950/40' : 'text-slate-700 hover:bg-slate-800'}`}
               >
                 <Layers size={16} />
               </button>
-              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700"><MoreVertical size={16} /></button>
+              <button className="p-1.5 hover:bg-slate-800 rounded-md text-slate-700" aria-label="More Options"><MoreVertical size={16} /></button>
             </div>
           </div>
         </div>
