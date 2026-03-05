@@ -46,7 +46,12 @@
       "Bash(Test-NetConnection -ComputerName 127.0.0.1 -Port 2222 -ErrorAction SilentlyContinue)",
       "Bash(Select-Object TcpTestSucceeded)",
       "Bash(powershell -Command \"netstat -ano | Select-String '':22 '' | Select-String ''LISTEN''\")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(gh pr create:*)",
+      "mcp__MCP_DOCKER__browser_snapshot",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\brian\\\\.FnBrian79\\\\AI-Quantizer-Hub\")",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)"
     ]
   }
 }
