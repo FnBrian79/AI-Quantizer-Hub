@@ -21,7 +21,20 @@ function b64decode(s: string): Uint8Array {
 
 // ── Key Derivation ────────────────────────────────────────────────────────────
 
+let cachedKey: CryptoKey  | null = null;
+let cachedSalt: Uint8Array | null = null;
+
 async function deriveKey(salt: Uint8Array): Promise<CryptoKey> {
+  // Check memory cache: PBKDF2 is expensive; avoid re-deriving if salt matches.
+  if (
+    cachedKey &&
+    cachedSalt &&
+    salt.length === cachedSalt.length &&
+    salt.every((val, i) => val === cachedSalt![i])
+  ) {
+    return cachedKey;
+  }
+
   const base = await window.crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(APP_SECRET),
@@ -29,13 +42,17 @@ async function deriveKey(salt: Uint8Array): Promise<CryptoKey> {
     false,          // not extractable — key material stays inside SubtleCrypto
     ['deriveKey']
   );
-  return window.crypto.subtle.deriveKey(
+  const key = await window.crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt, iterations: 100_000, hash: 'SHA-256' },
     base,
     { name: 'AES-GCM', length: 256 },
     false,
     ['encrypt', 'decrypt']
   );
+
+  cachedKey = key;
+  cachedSalt = new Uint8Array(salt); // Defensive copy
+  return key;
 }
 
 // Returns the persisted 16-byte salt; generates and saves it on first call.
