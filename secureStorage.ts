@@ -21,7 +21,21 @@ function b64decode(s: string): Uint8Array {
 
 // ── Key Derivation ────────────────────────────────────────────────────────────
 
+let cachedKey: CryptoKey | null = null;
+let cachedSalt: Uint8Array | null = null;
+
 async function deriveKey(salt: Uint8Array): Promise<CryptoKey> {
+  if (cachedKey && cachedSalt && salt.length === cachedSalt.length) {
+    let match = true;
+    for (let i = 0; i < salt.length; i++) {
+      if (salt[i] !== cachedSalt[i]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) return cachedKey;
+  }
+
   const base = await window.crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(APP_SECRET),
@@ -29,13 +43,17 @@ async function deriveKey(salt: Uint8Array): Promise<CryptoKey> {
     false,          // not extractable — key material stays inside SubtleCrypto
     ['deriveKey']
   );
-  return window.crypto.subtle.deriveKey(
+  const key = await window.crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt, iterations: 100_000, hash: 'SHA-256' },
     base,
     { name: 'AES-GCM', length: 256 },
     false,
     ['encrypt', 'decrypt']
   );
+
+  cachedKey = key;
+  cachedSalt = new Uint8Array(salt); // Defensive copy
+  return key;
 }
 
 // Returns the persisted 16-byte salt; generates and saves it on first call.
@@ -103,4 +121,6 @@ export async function loadSecure<T>(fallback: T): Promise<T> {
 export function clearSecure(): void {
   localStorage.removeItem(SECURE_KEY);
   localStorage.removeItem(SALT_KEY);
+  cachedKey = null;
+  cachedSalt = null;
 }
