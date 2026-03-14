@@ -207,6 +207,14 @@ const Dashboard: React.FC = () => {
     }));
   }, [addLog]);
 
+  const handleControlPanelAction = useCallback((msg: string) => {
+    if (msg.includes('Stress Test')) {
+      runStressTest();
+    } else {
+      addLog(msg);
+    }
+  }, [runStressTest, addLog]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPods(currentPods => currentPods.map(pod => {
@@ -415,10 +423,7 @@ const Dashboard: React.FC = () => {
           <BackboneStatus backbone={backbone} />
           <PiecesOSContext snippets={snippets} debugMode={debugMode} />
           <PromptEvolution contract={contract} onUpdate={handleUpdateContract} />
-          <ControlPanel onAction={(msg) => {
-            if (msg.includes('Stress Test')) runStressTest();
-            else addLog(msg);
-          }} />
+          <ControlPanel onAction={handleControlPanelAction} />
         </div>
       </main>
       

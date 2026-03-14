@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Play, Square, RefreshCcw, Send, Settings2, Bug, Zap } from 'lucide-react';
 
 interface Props {
@@ -61,4 +61,4 @@ const ControlPanel: React.FC<Props> = ({ onAction }) => {
   );
 };
 
-export default ControlPanel;
+export default memo(ControlPanel);
