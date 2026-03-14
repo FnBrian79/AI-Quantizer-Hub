@@ -48,6 +48,12 @@ const THOUGHT_SNIPPETS = [
   "Handshaking with local backbone (Llama 3.1)."
 ];
 
+const AGENT_OPTIONS = Object.values(AgentType).map(type => (
+  <option key={type} value={type} className="bg-slate-900">
+    {type}
+  </option>
+));
+
 const Dashboard: React.FC = () => {
   const [pods, setPods] = useState<ConversationPod[]>(INITIAL_PODS);
   const [antiGravity, setAntiGravity] = useState<boolean>(true);
@@ -347,7 +353,7 @@ const Dashboard: React.FC = () => {
                       onChange={(e) => setAgent1(e.target.value as AgentType)}
                       className="bg-transparent border-none outline-none text-[11px] font-bold text-blue-400 cursor-pointer pr-2"
                     >
-                      {Object.values(AgentType).map(type => <option key={type} value={type} className="bg-slate-900">{type}</option>)}
+                      {AGENT_OPTIONS}
                     </select>
                   </div>
                 </div>
@@ -361,7 +367,7 @@ const Dashboard: React.FC = () => {
                       onChange={(e) => setAgent2(e.target.value as AgentType)}
                       className="bg-transparent border-none outline-none text-[11px] font-bold text-purple-400 cursor-pointer pr-2"
                     >
-                      {Object.values(AgentType).map(type => <option key={type} value={type} className="bg-slate-900">{type}</option>)}
+                      {AGENT_OPTIONS}
                     </select>
                   </div>
                 </div>
