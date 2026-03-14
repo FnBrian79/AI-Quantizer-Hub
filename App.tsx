@@ -48,6 +48,8 @@ const THOUGHT_SNIPPETS = [
   "Handshaking with local backbone (Llama 3.1)."
 ];
 
+const THROUGHPUT_BARS = Array.from({ length: 8 });
+
 const Dashboard: React.FC = () => {
   const [pods, setPods] = useState<ConversationPod[]>(INITIAL_PODS);
   const [antiGravity, setAntiGravity] = useState<boolean>(true);
@@ -428,7 +430,7 @@ const Dashboard: React.FC = () => {
             <span className="text-slate-600">THROUGHPUT:</span>
             <span className="text-blue-400">42.1 t/s</span>
             <div className="w-16 h-4 flex items-end gap-0.5 ml-1">
-              {[...Array(8)].map((_, i) => (
+              {THROUGHPUT_BARS.map((_, i) => (
                 <div key={i} className="bg-blue-500/40 w-1" style={{ height: `${Math.random() * 100}%` }}></div>
               ))}
             </div>
